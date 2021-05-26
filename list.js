@@ -147,14 +147,14 @@ const addEmp = () => {
 const addRole = () => {
   connection.query("SELECT * FROM department", (err, depData) => {
     if (err) throw err;
-    console.log(depData, "before");
+    // console.log(depData, "before");
     const newDepData = depData.map((dep) => {
       return {
         name: dep.name,
         value: dep.id,
       };
     });
-    console.log(newDepData, "after");
+    // console.log(newDepData, "after");
 
     inquirer
       .prompt([
@@ -209,85 +209,63 @@ const addDep = () => {
       );
     });
 };
+// connection.query("SELECT * FROM department", (err, depData) => {
+//     if (err) throw err;
+//     // console.log(depData, "before");
+//     const newDepData = depData.map((dep) => {
+//       return {
+//         name: dep.name,
+//         value: dep.id,
+//       };
 const updateEmpRole = () => {
-  connection.query("UPDATE role_id WHERE EMPLOYEE");
+  connection.query("SELECT * FROM employee", (err, empData) => {
+    if (err) throw err;
+
+    const newEmpData = empData.map((emp) => {
+      return {
+        name: emp.first_name + " " + emp.last_name,
+        value: emp.id,
+      };
+    });
+    connection.query("SELECT * FROM role", (err, roleData) => {
+      if (err) throw err;
+      const newRoleData = roleData.map((role) => {
+        return {
+          name: role.title,
+          value: role.id,
+        };
+      });
+      inquirer
+        .prompt([
+          {
+            name: "EmpNameSel",
+            message: "Which employee would you like to update the role for",
+            type: "list",
+            choices: newEmpData,
+          },
+          {
+            name: "EmpRoleSel",
+            message: "What role would you like to assign?",
+            type: "list",
+            choices: newRoleData,
+          },
+        ])
+        .then((response) => {
+          connection.query("UPDATE role SET ? WHERE ?"),
+            [{ role_id: response.newRoleData }, { id: response.newEmpData }],
+            (err, data) => {
+              if (err) throw err;
+              console.table(data);
+            };
+          start();
+          // response.newRoleData;
+          //  `UPDATE emp_trackerdb.employee SET ? WHERE ?`,
+          //
+        });
+    });
+  });
 };
 
-// const remove = () => {
-//   inquirer.prompt([
-//     {
-//       name: "removeEmp",
-//       type: "list",
-//       message: "What employee would you like to remove?",
-//       //This choices needs a function to be able to call a connection to grab the info from the db
-//       choices: ["PlaceHolder"],
-//     },
-//   ]);
-// };
-
-// const add = () => {
-//   inquirer
-//     .prompt([
-//       {
-//         name: "firstName",
-//         message: "What is the new employees first name?",
-//       },
-//     ])
-//     .then(() => {
-//       inquirer.prompt([
-//         {
-//           name: "lastName",
-//           message: "what is the new employees last name?",
-//         },
-//       ]);
-//     });
-// };
-
 start();
-
-//**Arrays Of Prompt Questions**//
-// const addView = [
-//   {
-//     type: "rawlist",
-//     choices: ["Add", "View", "Exit"],
-//     message:
-//       "Would you like to add or view to the following:departments, roles, employees",
-//     name: "addViewName",
-//   },
-// ];
-
-// const add = () => {
-//   inquirer.prompt([
-//     {
-//       type: "rawlist",
-//       choices: ["department", "role", "employee"],
-//       message: "Which of the following would you like to create new?",
-//       name: "addName",
-//     },
-//   ]);
-// };
-
-// const view = () => {
-//   inquirer.prompt([
-//     {
-//       type: "rawlist",
-//       choices: ["department", "role", "employee"],
-//       message: "Which of the following would you like to view",
-//       name: "viewName",
-//     },
-//   ]);
-// };
-
-// const start = () => {
-//   inquirer.prompt(addView).then((answer) => {
-//     if (answer.addViewName === "View") {
-//       add();
-//     } else if (answer.addViewName === "Add") {
-//       view();
-//     } else {
-//       return "You selected to exit";
-//     }
-//   });
-// };
 
 module.exports = start;
