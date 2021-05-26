@@ -1,9 +1,3 @@
-//Create a Database with 3 tables
-//department id INT PRIMARY KEY
-//name VARCHAR(30) to hold a department name
-//role id INT PRIMARY KEY title VARCHAR(30) salary DECIMAL to hold role salary department_id Int
-
-//use inquirer to create question sets
 const mysql = require("mysql");
 const connection = mysql.createConnection({
   host: "localhost",
@@ -12,7 +6,6 @@ const connection = mysql.createConnection({
   password: "31427",
   database: "employeeTracker_db",
 });
-
 const inquirer = require("inquirer");
 require("console.table");
 const start = () => {
@@ -58,10 +51,7 @@ const start = () => {
           break;
       }
     });
-
-  //we need a switch case here to handle the different choices and what functions will be called to speak to the DB
 };
-
 const viewEmp = () => {
   connection.query("SELECT * FROM employee", (err, data) => {
     if (err) throw err;
@@ -101,7 +91,6 @@ const addEmp = () => {
           value: role.id,
         };
       });
-
       inquirer
         .prompt([
           {
@@ -147,15 +136,12 @@ const addEmp = () => {
 const addRole = () => {
   connection.query("SELECT * FROM department", (err, depData) => {
     if (err) throw err;
-    // console.log(depData, "before");
     const newDepData = depData.map((dep) => {
       return {
         name: dep.name,
         value: dep.id,
       };
     });
-    // console.log(newDepData, "after");
-
     inquirer
       .prompt([
         {
@@ -209,14 +195,6 @@ const addDep = () => {
       );
     });
 };
-// connection.query("SELECT * FROM department", (err, depData) => {
-//     if (err) throw err;
-//     // console.log(depData, "before");
-//     const newDepData = depData.map((dep) => {
-//       return {
-//         name: dep.name,
-//         value: dep.id,
-//       };
 const updateEmpRole = () => {
   connection.query("SELECT * FROM employee", (err, empData) => {
     if (err) throw err;
@@ -258,14 +236,9 @@ const updateEmpRole = () => {
               console.table(data);
             };
           start();
-          // response.newRoleData;
-          //  `UPDATE emp_trackerdb.employee SET ? WHERE ?`,
-          //
         });
     });
   });
 };
-
 start();
-
 module.exports = start;
